@@ -31,6 +31,7 @@ def open_and_split() -> list:
         title="Open tolino notebook",
         filetypes=[("Text files", "*.txt")]
     )
+    # TODO: If you abort this, there currently will be a FileNotFoundError...
     with open(path, encoding="utf-8-sig") as p:
         data = p.read()
     data_list = data.split(LINE_SEPARATOR)
@@ -43,16 +44,17 @@ def extract(data: list, title: str) -> list:
     the list data, which must not be empty
     """
     # var
+    data_res = data.copy()
     pattern = fr"{title}"
     x: int = 0
 
     # function
-    while x < len(data):
-        if not re.search(pattern, data[x]):
-            data.pop(x)
+    while x < len(data_res):
+        if not re.search(pattern, data_res[x]):
+            data_res.pop(x)
         else:
             x += 1
-    return data
+    return data_res
 
 
 def format(data: list, title: str) -> str:
@@ -102,6 +104,7 @@ if __name__ == "__main__":
     # var
     root = Tk()
     data: list
+    opened: bool = False
     book: str | None
     extracted_text: str
     new_path: str
@@ -109,7 +112,9 @@ if __name__ == "__main__":
     # main
     root.withdraw()
     while True:
-        data = open_and_split()
+        if not opened:  # do not ask this for further book requests
+            data = open_and_split()
+            opened = True
         # TODO: scan data for available books and ask for book via dropdown
         book = askstring(
             "Title of the book?",
@@ -120,16 +125,20 @@ if __name__ == "__main__":
         # given title could be part of another book title search for the title 
         # with the author like this: "TITLE \(AUTHOR\)"!
         # TODO: Also, this currently only works case sensitive
-        data = extract(data, str(book))
-        if len(data) == 0:
+        data_extracted = extract(data, str(book))
+        if len(data_extracted) == 0:
             messagebox.showerror(
                 "Nothing found",
                 "Could not extract any marks or notes. There is either no "
                 "book with this title or the chosen file is not a correctly "
                 "formatted tolino note file. Please try again!"
             )
-            continue
-        extracted_text = format(data, str(book))
+            opened = False  # if it was the wrong note file, open another one
+            # TODO: If you just mistyped the book title you should not have
+            # to open the note file again. This should get fixed as soon as
+            # there is a dropdown menu to choose the books to extract (s.a.)!
+            continue       
+        extracted_text = format(data_extracted, str(book))
         new_path = asksaveasfilename(
             parent=root,
             title="Save notes",
