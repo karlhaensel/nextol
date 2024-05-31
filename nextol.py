@@ -43,7 +43,7 @@ def extract(data: list, title: str) -> list:
     the list data, which must not be empty
     """
     # var
-    pattern = r"%s" % title
+    pattern = fr"{title}"
     x: int = 0
 
     # function
@@ -66,9 +66,8 @@ def format(data: list, title: str) -> str:
     BOOKMARK: str = r"Lesezeichen\xa0auf Seite"
     MARK_NEW: str = r"S."
     NOTE_NEW: str = r"Notiz S."
-    HEADER_TEXT: str = 'Markierungen und Notizen aus "%s":\n' \
-        '-------------------------------------------------\n\n\n' \
-        % title
+    HEADER_TEXT: str = f'Markierungen und Notizen aus "{title}":\n' \
+        '-------------------------------------------------\n\n\n'
 
     # var
     new_data: list = []
