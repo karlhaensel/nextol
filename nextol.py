@@ -102,7 +102,7 @@ if __name__ == "__main__":
     # var
     root = Tk()
     data: list
-    book: str
+    book: str | None
     extracted_text: str
     new_path: str
 
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         # title. If there are two books with the same title or the user given
         # title could be part of another book title search for the title with
         # the author like this: "TITLE \(AUTHOR\)"!
-        data = extract(data, book)
+        data = extract(data, str(book))
         if len(data) == 0:
             messagebox.showerror(
                 "Nothing found",
@@ -128,7 +128,7 @@ if __name__ == "__main__":
                 "formatted tolino note file. Please try again!"
             )
             continue
-        extracted_text = format(data, book)
+        extracted_text = format(data, str(book))
         new_path = asksaveasfilename(
             parent=root,
             title="Save notes",
