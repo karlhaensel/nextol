@@ -115,10 +115,11 @@ if __name__ == "__main__":
             "Title of the book?",
             "Please enter the title of the book which marks and notes you "
             "want to extract!")
-        # This works currently only if there is only one book with the same
-        # title. If there are two books with the same title or the user given
-        # title could be part of another book title search for the title with
-        # the author like this: "TITLE \(AUTHOR\)"!
+        # TODO: This currently only works if there is only one book with the 
+        # same title. If there are two books with the same title or the user 
+        # given title could be part of another book title search for the title 
+        # with the author like this: "TITLE \(AUTHOR\)"!
+        # TODO: Also, this currently only works case sensitive
         data = extract(data, str(book))
         if len(data) == 0:
             messagebox.showerror(
