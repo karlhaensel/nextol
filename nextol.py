@@ -66,8 +66,8 @@ def format(data: list, title: str) -> str:
     BOOKMARK: str = r"Lesezeichen\xa0auf Seite"
     MARK_NEW: str = r"S."
     NOTE_NEW: str = r"Notiz S."
-    HEADER_TEXT: str = f'Markierungen und Notizen aus "{title}":\n' \
-        '-------------------------------------------------\n\n\n'
+    HEADER_TEXT: str = f'Markierungen und Notizen aus "{title}":'
+    HEADER_SEPARATOR: str = f'\n{"":-^{len(HEADER_TEXT)}}\n\n\n'  # filling up
 
     # var
     new_data: list = []
@@ -91,7 +91,7 @@ def format(data: list, title: str) -> str:
             new_data.append("\n".join(temp_data))
             x += 1
 
-    text = HEADER_TEXT  # starting text for new file with header
+    text = HEADER_TEXT + HEADER_SEPARATOR  # starting new file with header
     for dat in new_data:
         text += dat + "\n\n"  # separating marks/notes with blank lines
     return text
