@@ -127,6 +127,17 @@ if __name__ == "__main__":
         # given title could be part of another book title search for the title
         # with the author like this: "TITLE \(AUTHOR\)"!
         # TODO: Also, this currently only works case sensitive
+        if book is None or (book.strip() == ""):
+            if answer := messagebox.askquestion(
+                "Start again?",
+                "You either cancelled or entered an empty string."
+                "Do you want to start again with choosing a note file (yes) "
+                "or quit the programme (no)?"
+            ) == "yes":
+                opened = False
+                continue
+            else:
+                break
         data_extracted = extract(data, str(book))
         if len(data_extracted) == 0:
             messagebox.showerror(
