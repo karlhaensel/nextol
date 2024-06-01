@@ -38,10 +38,10 @@ def extract(data: list[str], title: str) -> list[str]:
     the list data, which must not be empty
     """
     # const
-    pattern = re.compile(fr"{title}")
+    PATTERN = re.compile(fr"{title}")
 
     # function
-    return [line for line in data if pattern.search(line)]
+    return [line for line in data if PATTERN.search(line)]
 
 
 def format(data: list, title: str) -> str:
@@ -52,38 +52,30 @@ def format(data: list, title: str) -> str:
     # const
     MARK: str = r"Markierung\xa0auf Seite"
     NOTE: str = r"Notiz\xa0auf Seite"
-    BOOKMARK: str = r"Lesezeichen\xa0auf Seite"
+    BOOKMARK = re.compile(r"Lesezeichen\xa0auf Seite")
     MARK_NEW: str = r"S."
     NOTE_NEW: str = r"Notiz S."
     HEADER_TEXT: str = f'Markierungen und Notizen aus "{title}":'
     HEADER_SEPARATOR: str = f'\n{"":-^{len(HEADER_TEXT)}}\n\n\n'  # filling up
 
     # var
-    new_data: list = []
-    temp_data: list
-    text: str
-    x: int = 0
+    data_new: list[str]
 
     # function
-    while x < len(data):
-        # len(data) must be bigger than 0 (assured through the main program)
-        if re.search(BOOKMARK, data[x]):
-            data.pop(x)  # removing bookmarks (they do not give information)
-        else:
-            # replacing long site info with short one:
-            data[x] = re.sub(MARK, MARK_NEW, data[x])
-            data[x] = re.sub(NOTE, NOTE_NEW, data[x])
-            temp_data = data[x].split("\n")
-            for i in range(2):
-                temp_data.pop(0)  # remove blank and title/author line
-                temp_data.pop(len(temp_data)-1)  # remove last and date line
-            new_data.append("\n".join(temp_data))
-            x += 1
-
-    text = HEADER_TEXT + HEADER_SEPARATOR  # starting new file with header
-    for dat in new_data:
-        text += dat + "\n\n"  # separating marks/notes with blank lines
-    return text
+    # TODO: strip whitespaces within the tolino created excerpts in "..."
+    # remove bookmark lines since they do not give information
+    # and replace long site info with short one:
+    data_new = [
+        re.sub(
+            NOTE, NOTE_NEW, re.sub(MARK, MARK_NEW, line)
+        ) for line in data if not BOOKMARK.search(line)
+    ]
+    # remove blank and title/author line at beginning
+    # and last and date line at the end of every entry
+    # (first separate by new lines then glue together again):
+    data_new = ["\n".join(line.split("\n")[2:-2]) for line in data_new]
+    # return text with header and separate every element with a blank line
+    return HEADER_TEXT + HEADER_SEPARATOR + "\n\n".join(data_new)
 
 
 # program
