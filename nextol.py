@@ -39,8 +39,8 @@ def extract(data: list[str], title: str) -> list[str]:
     """
     # const
     pattern = re.compile(fr"{title}")
-    
-    #function
+
+    # function
     return [line for line in data if pattern.search(line)]
 
 
@@ -131,7 +131,7 @@ if __name__ == "__main__":
                 continue
             else:
                 break
-        data_extracted = extract(data, str(book))
+        data_extracted = extract(data, book)
         if len(data_extracted) == 0:
             messagebox.showerror(
                 "Nothing found",
@@ -144,7 +144,7 @@ if __name__ == "__main__":
             # to open the note file again. This should get fixed as soon as
             # there is a dropdown menu to choose the books to extract (s.a.)!
             continue
-        extracted_text = format(data_extracted, str(book))
+        extracted_text = format(data_extracted, book)
         new_path = asksaveasfilename(
             parent=root,
             title="Save notes",
