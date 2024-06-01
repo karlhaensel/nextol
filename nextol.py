@@ -13,7 +13,7 @@ from os import startfile
 
 
 # functions
-def open_and_split() -> list:
+def open_and_split(path: str) -> list:
     """Opening a tolino notebook file and splitting it by the separator line
     returning a list of the items
     """
@@ -21,21 +21,15 @@ def open_and_split() -> list:
     LINE_SEPARATOR: str = "\n-----------------------------------\n"
 
     # var
-    path: str
     data: str
     data_list: list
 
     # function
-    path = askopenfilename(
-        parent=root,
-        title="Open tolino notebook",
-        filetypes=[("Text files", "*.txt")]
-    )
-    # TODO: If you abort this, there currently will be a FileNotFoundError...
     with open(path, encoding="utf-8-sig") as p:
         data = p.read()
     data_list = data.split(LINE_SEPARATOR)
-    data_list[0] = "\n" + data_list[0]  # fit the pattern of the other lines
+    # fit pattern of other lines for the formatting later:
+    data_list[0] = "\n" + data_list[0]
     return data_list
 
 
@@ -103,6 +97,7 @@ def format(data: list, title: str) -> str:
 if __name__ == "__main__":
     # var
     root = Tk()
+    path: str
     data: list
     opened: bool = False
     book: str | None
@@ -113,16 +108,24 @@ if __name__ == "__main__":
     root.withdraw()
     while True:
         if not opened:  # do not ask this for further book requests
-            data = open_and_split()
+            data = open_and_split(
+                path := askopenfilename(
+                    parent=root,
+                    title="Open tolino notebook",
+                    filetypes=[("Text files", "*.txt")]
+                )
+            )
+            # TODO: If you abort this dialogue, there currently will be a
+            # FileNotFoundError which should be catched via except
             opened = True
         # TODO: scan data for available books and ask for book via dropdown
         book = askstring(
             "Title of the book?",
             "Please enter the title of the book which marks and notes you "
             "want to extract!")
-        # TODO: This currently only works if there is only one book with the 
-        # same title. If there are two books with the same title or the user 
-        # given title could be part of another book title search for the title 
+        # TODO: This currently only works if there is only one book with the
+        # same title. If there are two books with the same title or the user
+        # given title could be part of another book title search for the title
         # with the author like this: "TITLE \(AUTHOR\)"!
         # TODO: Also, this currently only works case sensitive
         data_extracted = extract(data, str(book))
@@ -137,7 +140,7 @@ if __name__ == "__main__":
             # TODO: If you just mistyped the book title you should not have
             # to open the note file again. This should get fixed as soon as
             # there is a dropdown menu to choose the books to extract (s.a.)!
-            continue       
+            continue
         extracted_text = format(data_extracted, str(book))
         new_path = asksaveasfilename(
             parent=root,
