@@ -72,9 +72,9 @@ def format(data: list, title: str) -> str:
     ]
     # remove blank and title/author line at beginning
     # and last and date line at the end of every entry
-    # (first separate by new lines then glue together again):
+    # (therefore first separate by new lines then glue together again):
     data_new = ["\n".join(line.split("\n")[2:-2]) for line in data_new]
-    # return text with header and separate every element with a blank line
+    # return text with header and separate every element with a blank line:
     return HEADER_TEXT + HEADER_SEPARATOR + "\n\n".join(data_new)
 
 
@@ -86,6 +86,7 @@ if __name__ == "__main__":
     data: list
     opened: bool = False
     book: str | None
+    startnew: bool | None
     extracted_text: str
     new_path: str
 
@@ -113,16 +114,18 @@ if __name__ == "__main__":
         # with the author like this: "TITLE \(AUTHOR\)"!
         # TODO: Also, this currently only works case sensitive
         if book is None or (book.strip() == ""):
-            if answer := messagebox.askquestion(
-                "Start again?",
-                "You either cancelled or entered an empty string."
-                "Do you want to start again with choosing a note file (yes) "
-                "or quit the programme (no)?"
-            ) == "yes":
-                opened = False
-                continue
-            else:
+            startnew = messagebox.askyesnocancel(
+                "Open new note file?",
+                "You either cancelled or entered an empty string. "
+                "Do you want to start again and open a new note file (yes), "
+                "enter a new book title for the already opened note file "
+                "(no) or quit the programme (cancel)?"
+            )
+            if startnew is None:
                 break
+            elif startnew:
+                opened = False
+            continue
         data_extracted = extract(data, book)
         if len(data_extracted) == 0:
             messagebox.showerror(
