@@ -107,6 +107,7 @@ if __name__ == "__main__":
     # main
     root.withdraw()
     while True:
+        # TODO: Catch errors for filename dialogues (esp. when quitting)
         if not opened:  # do not ask this for further book requests
             data = open_and_split(
                 path := askopenfilename(
@@ -115,8 +116,6 @@ if __name__ == "__main__":
                     filetypes=[("Text files", "*.txt")]
                 )
             )
-            # TODO: If you abort this dialogue, there currently will be a
-            # FileNotFoundError which should be catched via except
             opened = True
         # TODO: scan data for available books and ask for book via dropdown
         book = askstring(
