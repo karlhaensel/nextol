@@ -28,27 +28,20 @@ def open_and_split(path: str) -> list:
     with open(path, encoding="utf-8-sig") as p:
         data = p.read()
     data_list = data.split(LINE_SEPARATOR)
-    # fit pattern of other lines for the formatting later:
+    # fit pattern of other lines for later formatting:
     data_list[0] = "\n" + data_list[0]
     return data_list
 
 
-def extract(data: list, title: str) -> list:
+def extract(data: list[str], title: str) -> list[str]:
     """Extracting the marks and notes for a specific book with title from
     the list data, which must not be empty
     """
-    # var
-    data_res = data.copy()
-    pattern = fr"{title}"
-    x: int = 0
-
-    # function
-    while x < len(data_res):
-        if not re.search(pattern, data_res[x]):
-            data_res.pop(x)
-        else:
-            x += 1
-    return data_res
+    # const
+    pattern = re.compile(fr"{title}")
+    
+    #function
+    return [line for line in data if pattern.search(line)]
 
 
 def format(data: list, title: str) -> str:
