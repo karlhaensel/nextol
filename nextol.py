@@ -81,9 +81,10 @@ def format(data: list, title: str) -> str:
 if __name__ == "__main__":
     # var
     root = Tk()
+    opened: bool = False
     path: str
     data: list
-    opened: bool = False
+    quit: bool
     book: str | None
     startnew: bool | None
     extracted_text: str
@@ -92,16 +93,25 @@ if __name__ == "__main__":
     # main
     root.withdraw()
     while True:
-        # TODO: Catch errors for filename dialogues (esp. when quitting)
         if not opened:  # do not ask this for further book requests
-            data = open_and_split(
-                path := askopenfilename(
+            path = askopenfilename(
                     parent=root,
                     title="Open tolino notebook",
                     filetypes=[("Text files", "*.txt")]
                 )
-            )
-            opened = True
+            if path:
+                data = open_and_split(path)
+                opened = True
+            else:
+                quit = messagebox.askyesno(
+                    "Quit nextol?",
+                    "You cancelled the dialogue. Do you want to quit (yes) "
+                    "or do you want to try again (no)?"
+                )
+            if quit:
+                break
+            else:
+                continue
         # TODO: scan data for available books and ask for book via dropdown
         book = askstring(
             "Title of the book?",
@@ -144,7 +154,7 @@ if __name__ == "__main__":
             title="Save notes",
             filetypes=[("Text files", "*.txt")]
         )
-        if new_path and not new_path.endswith(".txt"):
+        if not new_path.endswith(".txt"):
             new_path += ".txt"
         with open(new_path, "w", encoding="utf8") as n:
             n.write(extracted_text)
