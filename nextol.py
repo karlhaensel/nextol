@@ -53,6 +53,8 @@ def format(data: list, title: str) -> str:
     MARK: str = r"Markierung\xa0auf Seite"
     NOTE: str = r"Notiz\xa0auf Seite"
     BOOKMARK = re.compile(r"Lesezeichen\xa0auf Seite")
+    END: str = " \""
+    END_NEW: str = "\""
     MARK_NEW: str = r"S."
     NOTE_NEW: str = r"Notiz S."
     HEADER_TEXT: str = f'Markierungen und Notizen aus "{title}":'
@@ -62,12 +64,9 @@ def format(data: list, title: str) -> str:
     data_new: list[str]
 
     # function
-    # TODO: strip whitespaces within the tolino created excerpts in "..."
-    # remove bookmark lines since they do not give information
-    # and replace long site info with short one:
     data_new = [
         re.sub(
-            NOTE, NOTE_NEW, re.sub(MARK, MARK_NEW, line)
+            END, END_NEW, re.sub(NOTE, NOTE_NEW, re.sub(MARK, MARK_NEW, line))
         ) for line in data if not BOOKMARK.search(line)
     ]
     # remove blank and title/author line at beginning
