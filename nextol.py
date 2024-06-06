@@ -144,6 +144,8 @@ if __name__ == "__main__":
             title="Save notes",
             filetypes=[("Text files", "*.txt")]
         )
+        if new_path and not new_path.endswith(".txt"):
+            new_path += ".txt"
         with open(new_path, "w", encoding="utf8") as n:
             n.write(extracted_text)
         if answer := messagebox.askquestion(
