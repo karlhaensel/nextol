@@ -117,11 +117,10 @@ if __name__ == "__main__":
             "Title of the book?",
             "Please enter the title of the book which marks and notes you "
             "want to extract!")
-        # TODO: This currently only works if there is only one book with the
+        # Note: This currently only works if there is only one book with the
         # same title. If there are two books with the same title or the user
         # given title could be part of another book title search for the title
         # with the author like this: "TITLE \(AUTHOR\)"!
-        # TODO: Also, this currently only works case sensitive
         if book is None or (book.strip() == ""):
             startnew = messagebox.askyesnocancel(
                 "Open new note file?",
@@ -144,10 +143,8 @@ if __name__ == "__main__":
                 "formatted tolino note file. Please try again!"
             )
             opened = False  # if it was the wrong note file, open another one
-            # TODO: If you just mistyped the book title you should not have
-            # to open the note file again. This should get fixed as soon as
-            # there is a dropdown menu to choose the books to extract (s.a.)!
             continue
+        # TODO: add option to export to a nicely formatted TeX-File
         extracted_text = format(data_extracted, book)
         new_path = asksaveasfilename(
             parent=root,
