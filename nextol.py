@@ -104,7 +104,7 @@ if __name__ == "__main__":
     data: list
     quit: bool = False
     titles: set[str]
-    book: str | None = None
+    book: str | None
     startnew: bool | None
     extracted_text: str
     new_path: str
