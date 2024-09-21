@@ -33,7 +33,25 @@ def open_and_split(path: str) -> list:
     return data_list
 
 
-def extract(data: list[str], title: str) -> list[str]:
+def extract_titles(data: list[str]):
+    """Extracting all possible book titles from the list of strings and
+    returning them as a set
+    """
+    # const
+    PATTERN = re.compile(r".+? \(.+?, .+?\)")
+
+    # var
+    titles: set[str] = set()
+
+    # function
+    for line in data:
+        match = PATTERN.search(line)
+        if match:
+            titles.add((match.group(0)))
+    return titles
+
+
+def extract_book(data: list[str], title: str) -> list[str]:
     """Extracting the marks and notes for a specific book with title from
     the list data, which must not be empty
     """
@@ -84,8 +102,9 @@ if __name__ == "__main__":
     opened: bool = False
     path: str
     data: list
-    quit: bool
-    book: str | None
+    quit: bool = False
+    titles: set[str]
+    book: str | None = None
     startnew: bool | None
     extracted_text: str
     new_path: str
@@ -112,15 +131,13 @@ if __name__ == "__main__":
                 break
             else:
                 continue
-        # TODO: scan data for available books and ask for book via dropdown
+        titles = extract_titles(data)
         book = askstring(
             "Title of the book?",
             "Please enter the title of the book which marks and notes you "
-            "want to extract!")
-        # Note: This currently only works if there is only one book with the
-        # same title. If there are two books with the same title or the user
-        # given title could be part of another book title search for the title
-        # with the author like this: "TITLE \(AUTHOR\)"!
+            "want to extract!\n\nAvailable books:\n" + "\n".join(titles)
+        )
+        # TODO: ask for book via dropdown
         if book is None or (book.strip() == ""):
             startnew = messagebox.askyesnocancel(
                 "Open new note file?",
@@ -134,7 +151,7 @@ if __name__ == "__main__":
             elif startnew:
                 opened = False
             continue
-        data_extracted = extract(data, book)
+        data_extracted = extract_book(data, book)
         if len(data_extracted) == 0:
             messagebox.showerror(
                 "Nothing found",
