@@ -84,7 +84,7 @@ if __name__ == "__main__":
     opened: bool = False
     path: str
     data: list
-    quit: bool
+    quit: bool = False
     book: str | None
     startnew: bool | None
     extracted_text: str
